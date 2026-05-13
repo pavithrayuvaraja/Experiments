@@ -58,51 +58,68 @@
         }
 
         input:focus { background: white; color: black; }
+        
+        .glass-form {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            box-shadow: 8px 8px 0px var(--border);
+        }
     </style>
 </head>
 <body class="min-h-screen p-6 md:p-12 flex flex-col items-center">
 
     <div class="max-w-4xl w-full">
-        <!-- Nav -->
+        <!-- Navigation -->
         <nav class="flex justify-between items-center mb-16 border-b-2 border-[#1a1a1a] pb-6">
             <h1 class="text-xl font-bold uppercase tracking-tighter">Atmosphere</h1>
-            <select id="theme-select" onchange="updateTheme()" class="text-sm font-bold">
-                <option value="default">Light</option>
-                <option value="dark-theme">Midnight</option>
+            <select id="theme-select" onchange="updateTheme()" class="text-sm font-bold cursor-pointer">
+                <option value="default">Light View</option>
+                <option value="dark-theme">Midnight View</option>
             </select>
         </nav>
 
-        <!-- Mood Section -->
+        <!-- Header -->
         <header class="mb-12">
-            <h2 class="text-5xl md:text-6xl font-serif italic font-bold mb-4" style="font-family: 'Fraunces', serif;">How is your heart feeling?</h2>
+            <h2 class="text-5xl md:text-6xl font-serif italic font-bold mb-4" style="font-family: 'Fraunces', serif;">How is your heart feeling right now?</h2>
         </header>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16" id="mood-grid">
-            <!-- Moods added by JS -->
+        <!-- All 11 Moods Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-16" id="mood-grid">
+            <!-- Moods populated by JS -->
         </div>
 
-        <div id="q-card" class="quote-card p-12 md:p-20 text-center mb-24 transition-opacity duration-500">
-            <p id="q-text" class="text-2xl md:text-4xl italic font-serif" style="font-family: 'Fraunces', serif;">Choose a mood to begin...</p>
+        <!-- Result Section -->
+        <div id="q-card" class="quote-card p-12 md:p-20 text-center mb-24 transition-all duration-500">
+            <p id="q-text" class="text-2xl md:text-4xl italic font-serif" style="font-family: 'Fraunces', serif;">Choose a mood to reveal a message for your path.</p>
         </div>
 
-        <!-- NEW: Registration Form Section -->
-        <section class="border-2 border-black p-10 rounded-xl mb-20 bg-white text-black shadow-[8px_8px_0px_black]">
-            <h3 class="text-3xl font-serif italic mb-6" style="font-family: 'Fraunces', serif;">Stay Connected</h3>
-            <p class="mb-8 opacity-70">Register your interest to receive daily mindfulness tips.</p>
+        <!-- Registration Form -->
+        <section class="glass-form p-8 md:p-12 rounded-xl mb-24">
+            <h3 class="text-3xl font-serif italic mb-4" style="font-family: 'Fraunces', serif;">Stay Connected</h3>
+            <p class="mb-8 opacity-70">Register your interest to join the community and receive daily insights.</p>
             
             <form id="registrationForm" class="flex flex-col gap-4">
-                <input type="text" name="name" placeholder="Your Name" required>
-                <input type="email" name="email" placeholder="Your Email" required>
-                <select name="interest">
-                    <option>Daily Motivation</option>
-                    <option>Mindfulness Tips</option>
-                    <option>Early Access</option>
-                </select>
-                <button type="submit" id="submitBtn" class="bg-black text-white p-4 font-bold uppercase hover:bg-orange-600 transition-colors">
+                <div class="flex flex-col">
+                    <label class="text-[10px] font-bold uppercase mb-1">Full Name</label>
+                    <input type="text" name="name" placeholder="e.g. Alex Smith" required>
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-[10px] font-bold uppercase mb-1">Email Address</label>
+                    <input type="email" name="email" placeholder="alex@example.com" required>
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-[10px] font-bold uppercase mb-1">Area of Interest</label>
+                    <select name="interest" class="cursor-pointer">
+                        <option>Daily Motivation</option>
+                        <option>Mindfulness Tips</option>
+                        <option>Early Access</option>
+                    </select>
+                </div>
+                <button type="submit" id="submitBtn" class="bg-black text-white p-4 mt-4 font-bold uppercase tracking-widest hover:bg-orange-600 transition-colors">
                     Submit Interest
                 </button>
             </form>
-            <p id="formStatus" class="mt-4 text-center font-bold text-green-600 hidden">Success! Your info was saved to the sheet.</p>
+            <p id="formStatus" class="mt-6 text-center font-bold text-green-600 hidden uppercase tracking-widest text-xs">✨ Success! Your information has been saved.</p>
         </section>
 
         <footer class="pt-8 border-t border-black/10 text-[10px] uppercase font-bold tracking-widest opacity-40 flex justify-between">
@@ -112,8 +129,9 @@
     </div>
 
     <script>
-        // --- FORM LOGIC ---
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwqA6MOrN7kIFMtXKg4Ex_L-79JnKfMnEDr1uUxPi6YoFqPqs1R09RFItA3OtghRCJj/exec';
+        // --- GOOGLE SHEETS FORM LOGIC ---
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwqA6MOrN7kIFMtXKg4Ex_L-79JnKfMnEDr1uUxPi6YoFqPqs1R09RFItA3OtghRCJj/exec'; 
+        
         const form = document.getElementById('registrationForm');
         const status = document.getElementById('formStatus');
         const btn = document.getElementById('submitBtn');
@@ -137,19 +155,33 @@
                 });
         });
 
-        // --- MOOD LOGIC ---
+        // --- MOOD & QUOTES LOGIC ---
         const moods = [
             { id: 'stressed', emoji: '😰', label: 'Stressed' },
             { id: 'sad', emoji: '😢', label: 'Sad' },
             { id: 'unmotivated', emoji: '🔋', label: 'Low Energy' },
-            { id: 'grateful', emoji: '🙏', label: 'Grateful' }
+            { id: 'angry', emoji: '💢', label: 'Angry' },
+            { id: 'excited', emoji: '🤩', label: 'Excited' },
+            { id: 'grateful', emoji: '🙏', label: 'Grateful' },
+            { id: 'tired', emoji: '😴', label: 'Tired' },
+            { id: 'lonely', emoji: '☁️', label: 'Lonely' },
+            { id: 'confident', emoji: '💪', label: 'Confident' },
+            { id: 'peaceful', emoji: '🌿', label: 'Peaceful' },
+            { id: 'anxious', emoji: '😟', label: 'Anxious' }
         ];
 
         const quotes = {
-            stressed: ["Breathe. You are a soul, not a machine.", "Simplify. Focus on the now."],
-            sad: ["Even the moon has phases.", "Be gentle with your healing."],
-            unmotivated: ["Small steps count as miles.", "Rest is productive too."],
-            grateful: ["Focus on the good.", "Gratitude is a superpower."]
+            stressed: ["Breathe. You are a soul, not a machine.", "Simplify. Focus on the now.", "The storm is outside; keep your center quiet."],
+            sad: ["Even the moon has phases.", "Be gentle with your healing.", "This season will yield to spring."],
+            unmotivated: ["Small steps count as miles.", "Rest is productive too.", "Do one tiny thing today."],
+            angry: ["Transform your fire into light.", "Silence is a power move.", "Don't let others decide your mood."],
+            excited: ["Catch the spark!", "Your joy is a magnet for miracles.", "Savor this peak."],
+            grateful: ["Focus on the good.", "Gratitude is a superpower.", "What you appreciate, appreciates."],
+            tired: ["Sleep is spiritual maintenance.", "It's okay to turn off.", "Give yourself grace to rest."],
+            lonely: ["You are a universe within yourself.", "Reach out when you're ready.", "You are more loved than you know."],
+            confident: ["You are the architect of your light.", "Walk as if you belong there.", "Trust your instincts."],
+            peaceful: ["Everything is exactly as it should be.", "May your heart be calm.", "Flow with the river of life."],
+            anxious: ["You are safe in this second.", "Don't believe every story your mind tells.", "Ground yourself in the now."]
         };
 
         function render() {
@@ -158,9 +190,10 @@
                 const d = document.createElement('div');
                 d.className = 'mood-box p-6 flex flex-col items-center cursor-pointer';
                 d.onclick = () => {
-                    document.getElementById('q-text').innerText = quotes[m.id][Math.floor(Math.random() * 2)];
+                    const list = quotes[m.id];
+                    document.getElementById('q-text').innerText = list[Math.floor(Math.random() * list.length)];
                 };
-                d.innerHTML = `<span class="text-4xl mb-2">${m.emoji}</span><span class="text-[10px] font-bold uppercase">${m.label}</span>`;
+                d.innerHTML = `<span class="text-4xl mb-2">${m.emoji}</span><span class="text-[10px] font-bold uppercase tracking-widest">${m.label}</span>`;
                 grid.appendChild(d);
             });
         }
