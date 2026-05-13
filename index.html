@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atmosphere | Your Space</title>
+    <title>Atmosphere | Mood & Connection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Modern Typography */
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,700&display=swap');
 
         :root {
@@ -14,31 +14,14 @@
             --border: #1a1a1a;
             --text: #1a1a1a;
             --accent: #ff5f1f;
-            --secondary: #6366f1;
-            --card-bg: #1a1a1a;
-            --card-text: #faf9f6;
         }
 
-        /* Midnight Theme Colors */
         body.dark-theme {
             --bg: #0d0d0d;
             --surface: #1a1a1a;
             --border: #333333;
             --text: #f2f2f2;
             --accent: #00ffcc;
-            --card-bg: #f2f2f2;
-            --card-text: #0d0d0d;
-        }
-
-        /* Earthy Theme Colors */
-        body.nature-theme {
-            --bg: #f2efe9;
-            --surface: #ffffff;
-            --border: #4a5d4e;
-            --text: #2c362e;
-            --accent: #8b9d77;
-            --card-bg: #4a5d4e;
-            --card-text: #f2efe9;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,70 +30,13 @@
             font-family: 'Space Grotesk', sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             transition: all 0.5s ease;
-            overflow-x: hidden;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 900px;
-            padding: 40px 0;
-        }
-
-        .header-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .branding { font-weight: 700; font-size: 1.5rem; text-transform: uppercase; letter-spacing: -1px; }
-
-        select {
-            background: var(--surface);
-            border: 2px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-family: inherit;
-            color: var(--text);
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        h1 {
-            font-family: 'Fraunces', serif;
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            line-height: 1.1;
-            font-style: italic;
-            font-weight: 700;
-            margin-bottom: 40px;
-        }
-
-        .mood-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-            margin-bottom: 60px;
         }
 
         .mood-box {
             background: var(--surface);
             border: 2px solid var(--border);
-            padding: 25px 15px;
-            cursor: pointer;
             transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            border-radius: 16px;
         }
 
         .mood-box:hover {
@@ -118,122 +44,129 @@
             box-shadow: 6px 6px 0px var(--border);
         }
 
-        .emoji { font-size: 2.5rem; }
-        .mood-name { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
-
         .quote-card {
-            background: var(--card-bg);
-            color: var(--card-text);
-            padding: 50px 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            background: var(--border);
+            color: var(--bg);
             clip-path: polygon(0 0, 100% 5%, 100% 100%, 5% 95%);
-            transition: all 0.6s ease;
-            min-height: 280px;
-            margin-top: 20px;
         }
 
-        .quote-author { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); margin-bottom: 15px; letter-spacing: 3px; font-weight: 700; }
-        .quote-text { font-family: 'Fraunces', serif; font-size: clamp(1.4rem, 4vw, 2.2rem); font-style: italic; line-height: 1.3; }
-
-        footer {
-            margin-top: 60px;
-            padding: 30px 0;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            opacity: 0.6;
-            letter-spacing: 1px;
+        input, select {
+            background: transparent;
+            border: 2px solid var(--border);
+            padding: 12px;
+            outline: none;
         }
 
-        @media (max-width: 600px) {
-            .mood-grid { grid-template-columns: repeat(2, 1fr); }
-            .header-nav { flex-direction: column; gap: 20px; align-items: flex-start; }
-        }
+        input:focus { background: white; color: black; }
     </style>
 </head>
-<body>
+<body class="min-h-screen p-6 md:p-12 flex flex-col items-center">
 
-    <div class="container">
-        <nav class="header-nav">
-            <div class="branding">Atmosphere</div>
-            <select id="theme-select" onchange="refreshTheme()">
-                <option value="default">Light View</option>
-                <option value="dark-theme">Midnight View</option>
-                <option value="nature-theme">Earthy View</option>
+    <div class="max-w-4xl w-full">
+        <!-- Nav -->
+        <nav class="flex justify-between items-center mb-16 border-b-2 border-[#1a1a1a] pb-6">
+            <h1 class="text-xl font-bold uppercase tracking-tighter">Atmosphere</h1>
+            <select id="theme-select" onchange="updateTheme()" class="text-sm font-bold">
+                <option value="default">Light</option>
+                <option value="dark-theme">Midnight</option>
             </select>
         </nav>
 
-        <h1>How is your heart feeling <br>right now?</h1>
+        <!-- Mood Section -->
+        <header class="mb-12">
+            <h2 class="text-5xl md:text-6xl font-serif italic font-bold mb-4" style="font-family: 'Fraunces', serif;">How is your heart feeling?</h2>
+        </header>
 
-        <div class="mood-grid">
-            <div class="mood-box" onclick="ignite('stressed')"><span class="emoji">😰</span><span class="mood-name">Stressed</span></div>
-            <div class="mood-box" onclick="ignite('sad')"><span class="emoji">😢</span><span class="mood-name">Sad</span></div>
-            <div class="mood-box" onclick="ignite('unmotivated')"><span class="emoji">🔋</span><span class="mood-name">Low Energy</span></div>
-            <div class="mood-box" onclick="ignite('angry')"><span class="emoji">💢</span><span class="mood-name">Angry</span></div>
-            <div class="mood-box" onclick="ignite('excited')"><span class="emoji">🤩</span><span class="mood-name">Excited</span></div>
-            <div class="mood-box" onclick="ignite('grateful')"><span class="emoji">🙏</span><span class="mood-name">Grateful</span></div>
-            <div class="mood-box" onclick="ignite('tired')"><span class="emoji">😴</span><span class="mood-name">Tired</span></div>
-            <div class="mood-box" onclick="ignite('lonely')"><span class="emoji">☁️</span><span class="mood-name">Lonely</span></div>
-            <div class="mood-box" onclick="ignite('confident')"><span class="emoji">💪</span><span class="mood-name">Confident</span></div>
-            <div class="mood-box" onclick="ignite('peaceful')"><span class="emoji">🌿</span><span class="mood-name">Peaceful</span></div>
-            <div class="mood-box" onclick="ignite('anxious')"><span class="emoji">😟</span><span class="mood-name">Anxious</span></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16" id="mood-grid">
+            <!-- Moods added by JS -->
         </div>
 
-        <div class="quote-zone">
-            <div id="q-card" class="quote-card">
-                <span class="quote-author">Insight</span>
-                <div id="q-body" class="quote-text">Select a mood to begin your moment of clarity.</div>
-            </div>
+        <div id="q-card" class="quote-card p-12 md:p-20 text-center mb-24 transition-opacity duration-500">
+            <p id="q-text" class="text-2xl md:text-4xl italic font-serif" style="font-family: 'Fraunces', serif;">Choose a mood to begin...</p>
         </div>
 
-        <footer>
-            <div>ATMOSPHERE &bull; 2024</div>
-            <div>STAY PRESENT</div>
+        <!-- NEW: Registration Form Section -->
+        <section class="border-2 border-black p-10 rounded-xl mb-20 bg-white text-black shadow-[8px_8px_0px_black]">
+            <h3 class="text-3xl font-serif italic mb-6" style="font-family: 'Fraunces', serif;">Stay Connected</h3>
+            <p class="mb-8 opacity-70">Register your interest to receive daily mindfulness tips.</p>
+            
+            <form id="registrationForm" class="flex flex-col gap-4">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <select name="interest">
+                    <option>Daily Motivation</option>
+                    <option>Mindfulness Tips</option>
+                    <option>Early Access</option>
+                </select>
+                <button type="submit" id="submitBtn" class="bg-black text-white p-4 font-bold uppercase hover:bg-orange-600 transition-colors">
+                    Submit Interest
+                </button>
+            </form>
+            <p id="formStatus" class="mt-4 text-center font-bold text-green-600 hidden">Success! Your info was saved to the sheet.</p>
+        </section>
+
+        <footer class="pt-8 border-t border-black/10 text-[10px] uppercase font-bold tracking-widest opacity-40 flex justify-between">
+            <span>Atmosphere &bull; 2024</span>
+            <span>Stay Present</span>
         </footer>
     </div>
 
     <script>
+        // --- FORM LOGIC ---
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwqA6MOrN7kIFMtXKg4Ex_L-79JnKfMnEDr1uUxPi6YoFqPqs1R09RFItA3OtghRCJj/exec';
+        const form = document.getElementById('registrationForm');
+        const status = document.getElementById('formStatus');
+        const btn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+            
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    status.classList.remove('hidden');
+                    form.reset();
+                    btn.innerText = 'Submit Interest';
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    btn.innerText = 'Error - Try Again';
+                    btn.disabled = false;
+                });
+        });
+
+        // --- MOOD LOGIC ---
+        const moods = [
+            { id: 'stressed', emoji: '😰', label: 'Stressed' },
+            { id: 'sad', emoji: '😢', label: 'Sad' },
+            { id: 'unmotivated', emoji: '🔋', label: 'Low Energy' },
+            { id: 'grateful', emoji: '🙏', label: 'Grateful' }
+        ];
+
         const quotes = {
-            stressed: ["Breathe. You are a soul, not a cog in a machine.", "Simplify. What is the one thing that matters right now?", "Don't let the noise of the world drown out your inner peace.", "Focus on your feet on the ground. You are here."],
-            sad: ["Even the moon has phases. Allow yourself yours.", "Tears are the soul's way of cleaning the windows.", "You are precious, you are loved, and you are never alone.", "This season of winter will eventually yield to spring."],
-            unmotivated: ["Small steps still count as miles. Just move an inch.", "Your low energy is an invitation to recharge, not to quit.", "Action is the antidote to despair. Do one tiny thing.", "Rest is productive. Your worth is not tied to your work."],
-            angry: ["Transform your fire into light, not heat.", "Pause before you speak. Silence is a power move.", "Peace is not the absence of storm, but the calm within it.", "Let go of the heavy coal. It only burns you."],
-            excited: ["Catch the spark! The world needs your vibrance.", "Your enthusiasm is a magnet for miracles.", "Savor this peak. You deserve every bit of this joy.", "Keep that momentum. You are flying today."],
-            grateful: ["Focus on the good and the good gets better.", "Gratitude turns what we have into enough.", "When you are grateful, the soul expands.", "Look around. You are already rich in so many ways."],
-            tired: ["Rest is not laziness; it is a necessity.", "You are allowed to turn off. The world will wait.", "Give yourself the grace of a slow evening.", "Your soul needs quiet to hear its own song."],
-            lonely: ["You are never truly alone. The stars are looking back at you.", "Solitude is where you find yourself.", "You are a universe within yourself. Explore it.", "Reach out when you're ready; we are all connected."],
-            confident: ["You are the architect of your own light.", "Own your greatness today.", "Walk as if you belong in every room you enter.", "The power to create your life is within your hands."],
-            peaceful: ["Everything is exactly as it should be.", "May your heart be calm and your mind clear.", "Protect your peace. It is your most valuable possession.", "Flow with life like water around a stone."],
-            anxious: ["You have survived 100% of your bad days.", "Come back to the present. You are safe in this second.", "Don't believe every story your mind tells you.", "Ground yourself. One breath at a time."]
+            stressed: ["Breathe. You are a soul, not a machine.", "Simplify. Focus on the now."],
+            sad: ["Even the moon has phases.", "Be gentle with your healing."],
+            unmotivated: ["Small steps count as miles.", "Rest is productive too."],
+            grateful: ["Focus on the good.", "Gratitude is a superpower."]
         };
 
-        function refreshTheme() {
-            const theme = document.getElementById('theme-select').value;
-            document.body.className = (theme === 'default') ? '' : theme;
+        function render() {
+            const grid = document.getElementById('mood-grid');
+            moods.forEach(m => {
+                const d = document.createElement('div');
+                d.className = 'mood-box p-6 flex flex-col items-center cursor-pointer';
+                d.onclick = () => {
+                    document.getElementById('q-text').innerText = quotes[m.id][Math.floor(Math.random() * 2)];
+                };
+                d.innerHTML = `<span class="text-4xl mb-2">${m.emoji}</span><span class="text-[10px] font-bold uppercase">${m.label}</span>`;
+                grid.appendChild(d);
+            });
         }
 
-        function ignite(mood) {
-            const card = document.getElementById('q-card');
-            const body = document.getElementById('q-body');
-            
-            // Animation effect
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(10px)';
-
-            setTimeout(() => {
-                const list = quotes[mood];
-                body.innerText = list[Math.floor(Math.random() * list.length)];
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, 300);
-        }
+        function updateTheme() { document.body.className = document.getElementById('theme-select').value; }
+        window.onload = render;
     </script>
 </body>
 </html>
