@@ -1,158 +1,239 @@
-<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
-    <div class="absolute -top-1/4 -left-1/4 w-[600px] h-[600px] bg-accent-primary opacity-10 blur-[120px] rounded-full"></div>
-    <div class="absolute -bottom-1/4 -right-1/4 w-[600px] h-[600px] bg-accent-secondary opacity-10 blur-[120px] rounded-full"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atmosphere | Your Space</title>
+    <style>
+        /* Modern Typography */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,700&display=swap');
 
-<div class="w-full max-w-6xl px-6 py-12">
-    <nav class="flex justify-between items-end border-b-2 border-[#1a1a1a] pb-6 mb-16">
-        <div class="text-2xl font-bold tracking-tighter uppercase">Atmosphere</div>
-        <select id="theme-trigger" onchange="updateTheme()" class="bg-transparent border border-[#1a1a1a] px-4 py-2 rounded font-medium cursor-pointer focus:outline-none">
-            <option value="default">Default Light</option>
-            <option value="dark-theme">Midnight</option>
-            <option value="nature-theme">Earthy</option>
-        </select>
-    </nav>
+        :root {
+            --bg: #faf9f6;
+            --surface: #ffffff;
+            --border: #1a1a1a;
+            --text: #1a1a1a;
+            --accent: #ff5f1f;
+            --secondary: #6366f1;
+            --card-bg: #1a1a1a;
+            --card-text: #faf9f6;
+        }
 
-    <section class="mb-20">
-        <h1 class="font-display italic font-bold text-5xl md:text-7xl leading-[0.9] mb-4">How is your heart feeling <br>right now?</h1>
-        <p class="text-lg opacity-70">An interactive space for emotional clarity and daily insight.</p>
-    </section>
+        /* Midnight Theme Colors */
+        body.dark-theme {
+            --bg: #0d0d0d;
+            --surface: #1a1a1a;
+            --border: #333333;
+            --text: #f2f2f2;
+            --accent: #00ffcc;
+            --card-bg: #f2f2f2;
+            --card-text: #0d0d0d;
+        }
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div class="lg:col-span-8">
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-12" id="mood-grid">
+        /* Earthy Theme Colors */
+        body.nature-theme {
+            --bg: #f2efe9;
+            --surface: #ffffff;
+            --border: #4a5d4e;
+            --text: #2c362e;
+            --accent: #8b9d77;
+            --card-bg: #4a5d4e;
+            --card-text: #f2efe9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.5s ease;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 0;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .branding { font-weight: 700; font-size: 1.5rem; text-transform: uppercase; letter-spacing: -1px; }
+
+        select {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: inherit;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            line-height: 1.1;
+            font-style: italic;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 60px;
+        }
+
+        .mood-box {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 25px 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border-radius: 16px;
+        }
+
+        .mood-box:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 6px 6px 0px var(--border);
+        }
+
+        .emoji { font-size: 2.5rem; }
+        .mood-name { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .quote-card {
+            background: var(--card-bg);
+            color: var(--card-text);
+            padding: 50px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 5%, 100% 100%, 5% 95%);
+            transition: all 0.6s ease;
+            min-height: 280px;
+            margin-top: 20px;
+        }
+
+        .quote-author { font-size: 0.8rem; text-transform: uppercase; color: var(--accent); margin-bottom: 15px; letter-spacing: 3px; font-weight: 700; }
+        .quote-text { font-family: 'Fraunces', serif; font-size: clamp(1.4rem, 4vw, 2.2rem); font-style: italic; line-height: 1.3; }
+
+        footer {
+            margin-top: 60px;
+            padding: 30px 0;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 600px) {
+            .mood-grid { grid-template-columns: repeat(2, 1fr); }
+            .header-nav { flex-direction: column; gap: 20px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav class="header-nav">
+            <div class="branding">Atmosphere</div>
+            <select id="theme-select" onchange="refreshTheme()">
+                <option value="default">Light View</option>
+                <option value="dark-theme">Midnight View</option>
+                <option value="nature-theme">Earthy View</option>
+            </select>
+        </nav>
+
+        <h1>How is your heart feeling <br>right now?</h1>
+
+        <div class="mood-grid">
+            <div class="mood-box" onclick="ignite('stressed')"><span class="emoji">😰</span><span class="mood-name">Stressed</span></div>
+            <div class="mood-box" onclick="ignite('sad')"><span class="emoji">😢</span><span class="mood-name">Sad</span></div>
+            <div class="mood-box" onclick="ignite('unmotivated')"><span class="emoji">🔋</span><span class="mood-name">Low Energy</span></div>
+            <div class="mood-box" onclick="ignite('angry')"><span class="emoji">💢</span><span class="mood-name">Angry</span></div>
+            <div class="mood-box" onclick="ignite('excited')"><span class="emoji">🤩</span><span class="mood-name">Excited</span></div>
+            <div class="mood-box" onclick="ignite('grateful')"><span class="emoji">🙏</span><span class="mood-name">Grateful</span></div>
+            <div class="mood-box" onclick="ignite('tired')"><span class="emoji">😴</span><span class="mood-name">Tired</span></div>
+            <div class="mood-box" onclick="ignite('lonely')"><span class="emoji">☁️</span><span class="mood-name">Lonely</span></div>
+            <div class="mood-box" onclick="ignite('confident')"><span class="emoji">💪</span><span class="mood-name">Confident</span></div>
+            <div class="mood-box" onclick="ignite('peaceful')"><span class="emoji">🌿</span><span class="mood-name">Peaceful</span></div>
+            <div class="mood-box" onclick="ignite('anxious')"><span class="emoji">😟</span><span class="mood-name">Anxious</span></div>
+        </div>
+
+        <div class="quote-zone">
+            <div id="q-card" class="quote-card">
+                <span class="quote-author">Insight</span>
+                <div id="q-body" class="quote-text">Select a mood to begin your moment of clarity.</div>
             </div>
         </div>
 
-        <aside class="lg:col-span-4 space-y-8">
-            <div class="card-surface border-2 border-[#1a1a1a] p-8 rounded-lg bg-white">
-                <h3 class="font-bold uppercase tracking-widest text-xs mb-6 opacity-60">Session Progress</h3>
-                <div class="chart-container">
-                    <canvas id="progressChart"></canvas>
-                </div>
-                <p class="text-center text-xs mt-4 opacity-50 italic">Tracking your daily emotional check-ins.</p>
-            </div>
-        </aside>
+        <footer>
+            <div>ATMOSPHERE &bull; 2024</div>
+            <div>STAY PRESENT</div>
+        </footer>
     </div>
 
-    <section class="mt-20">
-        <div id="display-area" class="quote-surface bg-[#1a1a1a] text-[#faf9f6] p-12 md:p-20 quote-mask min-h-[350px] flex flex-col justify-center transition-all duration-500">
-            <span class="text-accent-primary font-bold uppercase tracking-[0.2em] text-xs mb-6 block">Moment of Clarity</span>
-            <div id="insight-text" class="font-display italic text-3xl md:text-5xl leading-tight">Choose a mood to reveal a message for your path.</div>
-        </div>
-    </section>
+    <script>
+        const quotes = {
+            stressed: ["Breathe. You are a soul, not a cog in a machine.", "Simplify. What is the one thing that matters right now?", "Don't let the noise of the world drown out your inner peace.", "Focus on your feet on the ground. You are here."],
+            sad: ["Even the moon has phases. Allow yourself yours.", "Tears are the soul's way of cleaning the windows.", "You are precious, you are loved, and you are never alone.", "This season of winter will eventually yield to spring."],
+            unmotivated: ["Small steps still count as miles. Just move an inch.", "Your low energy is an invitation to recharge, not to quit.", "Action is the antidote to despair. Do one tiny thing.", "Rest is productive. Your worth is not tied to your work."],
+            angry: ["Transform your fire into light, not heat.", "Pause before you speak. Silence is a power move.", "Peace is not the absence of storm, but the calm within it.", "Let go of the heavy coal. It only burns you."],
+            excited: ["Catch the spark! The world needs your vibrance.", "Your enthusiasm is a magnet for miracles.", "Savor this peak. You deserve every bit of this joy.", "Keep that momentum. You are flying today."],
+            grateful: ["Focus on the good and the good gets better.", "Gratitude turns what we have into enough.", "When you are grateful, the soul expands.", "Look around. You are already rich in so many ways."],
+            tired: ["Rest is not laziness; it is a necessity.", "You are allowed to turn off. The world will wait.", "Give yourself the grace of a slow evening.", "Your soul needs quiet to hear its own song."],
+            lonely: ["You are never truly alone. The stars are looking back at you.", "Solitude is where you find yourself.", "You are a universe within yourself. Explore it.", "Reach out when you're ready; we are all connected."],
+            confident: ["You are the architect of your own light.", "Own your greatness today.", "Walk as if you belong in every room you enter.", "The power to create your life is within your hands."],
+            peaceful: ["Everything is exactly as it should be.", "May your heart be calm and your mind clear.", "Protect your peace. It is your most valuable possession.", "Flow with life like water around a stone."],
+            anxious: ["You have survived 100% of your bad days.", "Come back to the present. You are safe in this second.", "Don't believe every story your mind tells you.", "Ground yourself. One breath at a time."]
+        };
 
-    <footer class="mt-24 pt-8 border-t border-[#1a1a1a]/10 flex flex-col md:flex-row justify-between gap-4 text-[10px] font-bold tracking-widest uppercase opacity-60">
-        <div>Atmosphere SPA &bull; 2026 Edition</div>
-        <div>Information Architecture by AI Collaborator</div>
-        <div>Stay Present &bull; Breathe Deep</div>
-    </footer>
-</div>
+        function refreshTheme() {
+            const theme = document.getElementById('theme-select').value;
+            document.body.className = (theme === 'default') ? '' : theme;
+        }
 
-<script>
-    const moodData = [
-        { id: 'stressed', emoji: '😰', label: 'Stressed' },
-        { id: 'sad', emoji: '😢', label: 'Sad' },
-        { id: 'unmotivated', emoji: '🔋', label: 'Low Energy' },
-        { id: 'angry', emoji: '💢', label: 'Angry' },
-        { id: 'excited', emoji: '🤩', label: 'Excited' },
-        { id: 'grateful', emoji: '🙏', label: 'Grateful' },
-        { id: 'tired', emoji: '😴', label: 'Tired' },
-        { id: 'lonely', emoji: '☁️', label: 'Lonely' },
-        { id: 'confident', emoji: '💪', label: 'Confident' },
-        { id: 'peaceful', emoji: '🌿', label: 'Peaceful' },
-        { id: 'anxious', emoji: '😟', label: 'Anxious' }
-    ];
+        function ignite(mood) {
+            const card = document.getElementById('q-card');
+            const body = document.getElementById('q-body');
+            
+            // Animation effect
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
 
-    const quotes = {
-        stressed: ["Breathe. You are a soul, not a cog in a machine.", "Your stress is a reaction, not a final destination.", "Simplify. What is the one thing that matters right now?", "The storm is outside. Keep your inner temple quiet."],
-        sad: ["Sadness is proof that you have a deep capacity for love.", "Even the moon has phases. Allow yourself yours.", "Tears are the soul's way of cleaning the windows.", "Be gentle with your healing. There is no rush."],
-        unmotivated: ["Small steps still count as miles. Just move an inch.", "Your low energy is an invitation to recharge, not to quit.", "Motivation follows action. Do one tiny task.", "Rest is the fuel for your next great leap."],
-        angry: ["Anger is energy. Channel it into a creation.", "Pause before you speak. Silence is a power move.", "Protect your peace. Don't let others decide your mood.", "Transform your fire into light, not heat."],
-        excited: ["Catch the spark! The world needs your vibrance.", "Joy is the highest form of resistance. Stay bright.", "This energy is a gift. Where will you direct it?", "Your enthusiasm is a magnet for miracles."],
-        grateful: ["Gratitude is the bridge to abundance.", "Look at the small things. They are the big things.", "Thankfulness makes what we have enough.", "The universe loves a grateful heart."],
-        tired: ["Sleep is a form of spiritual maintenance.", "You are allowed to turn off. The world won't stop.", "Give yourself the grace of a slow evening.", "Fatigue is the body's way of saying 'I need you'."],
-        lonely: ["You are a universe within yourself. Explore it.", "Silence is where you hear your own true voice.", "Reach out when you're ready; you are more loved than you know.", "Your value is not determined by who is standing next to you."],
-        confident: ["You are the architect of your own light.", "Walk as if you belong in every room you enter.", "Trust the instincts that got you this far.", "You have everything you need to succeed."],
-        peaceful: ["Serenity is found in the acceptance of the now.", "Let the river of life flow through you without resistance.", "A calm heart is a fortress against any storm.", "Find the quiet space between your thoughts."],
-        anxious: ["Your mind is over-preparing for a future that hasn't arrived.", "Come back to the present. You are safe in this second.", "Anxiety is just a story. You are the author; write a new page.", "Ground yourself. You are here. You are safe."]
-    };
-
-    let stats = { interactions: 0, goal: 10 };
-    let chartInstance = null;
-
-    function initApp() {
-        renderMoods();
-        initChart();
-    }
-
-    function renderMoods() {
-        const grid = document.getElementById('mood-grid');
-        moodData.forEach(mood => {
-            const el = document.createElement('div');
-            el.className = 'card-surface bg-white border-2 border-[#1a1a1a] p-6 flex flex-col items-center gap-4 cursor-pointer transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_#1a1a1a]';
-            el.onclick = () => ignite(mood.id);
-            el.innerHTML = `<span class="text-4xl">${mood.emoji}</span><span class="text-[10px] font-bold uppercase tracking-widest">${mood.label}</span>`;
-            grid.appendChild(el);
-        });
-    }
-
-    function ignite(id) {
-        const textEl = document.getElementById('insight-text');
-        textEl.classList.remove('fade-update');
-        void textEl.offsetWidth; 
-        
-        const list = quotes[id];
-        textEl.innerText = list[Math.floor(Math.random() * list.length)];
-        textEl.classList.add('fade-update');
-        
-        stats.interactions++;
-        updateChart();
-    }
-
-    function updateTheme() {
-        const theme = document.getElementById('theme-trigger').value;
-        document.body.className = theme === 'default' ? '' : theme;
-        updateChartStyles();
-    }
-
-    function initChart() {
-        const ctx = document.getElementById('progressChart').getContext('2d');
-        chartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Check-ins', 'Remaining'],
-                datasets: [{
-                    data: [0, 10],
-                    backgroundColor: ['#ff5f1f', '#e5e7eb'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                cutout: '80%',
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
-
-    function updateChart() {
-        const completed = Math.min(stats.interactions, stats.goal);
-        const remaining = Math.max(0, stats.goal - completed);
-        chartInstance.data.datasets[0].data = [completed, remaining];
-        chartInstance.update();
-    }
-
-    function updateChartStyles() {
-        const isDark = document.body.classList.contains('dark-theme');
-        const isNature = document.body.classList.contains('nature-theme');
-        let color = '#e5e7eb';
-        if (isDark) color = '#333333';
-        if (isNature) color = '#c9e9d1';
-        
-        chartInstance.data.datasets[0].backgroundColor[1] = color;
-        chartInstance.update();
-    }
-
-    window.onload = initApp;
-</script>
+            setTimeout(() => {
+                const list = quotes[mood];
+                body.innerText = list[Math.floor(Math.random() * list.length)];
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
